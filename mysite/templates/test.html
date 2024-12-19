@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colossus - AI Football Predictions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: #000;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        header {
+            text-align: center;
+            padding: 6rem 1rem;
+            position: relative;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        header canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        header .header-content {
+            position: relative;
+            z-index: 1;
+            margin-top: 20vh;
+        }
+
+        header h1 {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(90deg, #ff8c00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px #ffd700;
+            animation: glow 3s infinite alternate;
+        }
+
+        header p {
+            font-size: 1.8rem;
+            margin-top: 1rem;
+            color: #bbbbbb;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #ff8c00, 0 0 20px #ffd700;
+            }
+            to {
+                text-shadow: 0 0 20px #ff8c00, 0 0 40px #ffd700;
+            }
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .fixture-container {
+            text-align: center;
+        }
+
+        .fixture-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .fixtures {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .match {
+            position: relative;
+            width: 320px;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.5));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .match:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.4);
+        }
+
+        .match::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://via.placeholder.com/320x200') no-repeat center;
+            background-size: cover;
+            filter: blur(8px);
+            opacity: 0.4;
+        }
+
+        .match-content {
+            position: relative;
+            z-index: 1;
+            padding: 1.5rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+        }
+
+        .match h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .prediction {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #101018;
+            color: #777;
+            font-size: 1rem;
+        }
+
+        /* Space Animation */
+        @keyframes starFlow {
+            from {
+                transform: translateZ(-200px) translateY(-200px);
+            }
+            to {
+                transform: translateZ(200px) translateY(200px);
+            }
+        }
+
+        canvas {
+            background: radial-gradient(circle, #000011, #110033, #000);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <canvas id="headerCanvas"></canvas>
+        <div class="header-content">
+            <h1>Colossus</h1>
+            <p>Giving the power back to the people through AI-driven sports predictions</p>
+        </div>
+    </header>
+    <main>
+        <div class="fixture-container">
+            <h2 class="fixture-title">Today's Football Fixtures</h2>
+            <div class="fixtures">
+                <div class="match">
+                    <div class="match-content">
+                        <h3>Manchester United vs Arsenal</h3>
+                        <p><span class="prediction">Prediction:</span> Manchester United Win</p>
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="match-content">
+                        <h3>Liverpool vs Chelsea</h3>
+                        <p><span class="prediction">Prediction:</span> Draw</p>
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="match-content">
+                        <h3>Barcelona vs Real Madrid</h3>
+                        <p><span class="prediction">Prediction:</span> Real Madrid Win</p>
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="match-content">
+                        <h3>Bayern Munich vs PSG</h3>
+                        <p><span class="prediction">Prediction:</span> Bayern Munich Win</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        &copy; 2024 Colossus. All rights reserved.
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('headerCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const stars = [];
+        const maxStars = 200;
+        
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.z = Math.random() * canvas.width;
+                this.radius = Math.random() * 1.5;
+            }
+
+            move() {
+                this.z -= 2;
+                if (this.z <= 0) {
+                    this.z = canvas.width;
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                }
+            }
+
+            draw() {
+                const sx = (this.x - canvas.width / 2) * (canvas.width / this.z);
+                const sy = (this.y - canvas.height / 2) * (canvas.width / this.z);
+                const sr = this.radius * (canvas.width / this.z);
+
+                ctx.beginPath();
+                ctx.arc(sx + canvas.width / 2, sy + canvas.height / 2, sr, 0, Math.PI * 2);
+                ctx.fillStyle = "white";
+                ctx.fill();
+            }
+        }
+
+        function createStars() {
+            for (let i = 0; i < maxStars; i++) {
+                stars.push(new Star());
+            }
+        }
+
+        function animateStars() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            stars.forEach(star => {
+                star.move();
+                star.draw();
+            });
+
+            requestAnimationFrame(animateStars);
+        }
+
+        createStars();
+        animateStars();
+    </script>
+</body>
+</html>

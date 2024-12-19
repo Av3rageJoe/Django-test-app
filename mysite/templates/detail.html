@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Page for the images!
+{% endblock %}
+
+
+{% block body %}
+
+    <h3> Text </h3>
+        {{ object }}
+    <h3> Image </h3>
+        <img src="{{ object.image.url }}" style ='width: 100%; height: auto;' class = "rounded img-fluid">
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+
+{% block title %}
+    My Super Awesome Home Page - wayhey!
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-sm-6 col-md-3">
+                <div class="card" style="width: 18rem;">
+                    {% thumbnail post.image "200x200" crop="center" as im %}
+                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                    
+                    <div class="card-body">
+                    <h5 class="card-title"> {{ post.text }} </h5>
+                    <a href="{% url 'feed:detail' post.id %}" class="btn btn-primary">Go to image</a>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
